@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -24,6 +25,9 @@ public class PlayerMovement : MonoBehaviour
     private BoxCollider2D boxCollider;
     private float wallJumpCooldown;
     private float horizontalInput;
+
+    [Header("SFX")]
+    [SerializeField] private AudioClip jumpSound;
 
     private void Awake()
     {
