@@ -18,7 +18,7 @@ public class Health : MonoBehaviour
     [SerializeField] private Behaviour[] components;
     private bool invulnerable;
 
-    [Header("Death Sound")]
+    [Header ("Death Sound")]
     [SerializeField] private AudioClip deathSound;
     [SerializeField] private AudioClip hurtSound;
     private void Awake()
@@ -60,6 +60,21 @@ public class Health : MonoBehaviour
     public void AddHealth(float _value)
     {
         currentHealth = Mathf.Clamp(currentHealth + _value, 0, startingHealth);
+    }
+
+    public void Respawn()
+    {
+        isDead = false;
+        AddHealth(startingHealth);
+        anim.ResetTrigger("die");
+        anim.Play("idle_player");
+        StartCoroutine(Invunerability());
+
+        // Activate all attached component classes
+        foreach (Behaviour component in components)
+        {
+            component.enabled = true;
+        }
     }
 
     private IEnumerator Invunerability()

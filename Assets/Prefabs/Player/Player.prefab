@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 694141567655949736}
   - component: {fileID: 8579099741464857513}
   - component: {fileID: 6855340517320502232}
+  - component: {fileID: 2797873065011848712}
   - component: {fileID: 1339131188545239168}
   m_Layer: 8
   m_Name: Player
@@ -194,6 +195,7 @@ MonoBehaviour:
   wallLayer:
     serializedVersion: 2
     m_Bits: 128
+  jumpSound: {fileID: 8300000, guid: cbb46d4c3a27c9741bc0af051fa2c2d0, type: 3}
 --- !u!114 &8579099741464857513
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -219,6 +221,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  fireballSound: {fileID: 8300000, guid: 6da619e9b0ea7784c87a16fed9ef2c0d, type: 3}
 --- !u!114 &6855340517320502232
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -237,6 +240,21 @@ MonoBehaviour:
   components:
   - {fileID: 8579099741464857513}
   - {fileID: 694141567655949736}
+  deathSound: {fileID: 8300000, guid: c2b9f5ed1a9197f49bb8383d5f24dedd, type: 3}
+  hurtSound: {fileID: 8300000, guid: 0a180652ab46f2d4687d31444424a037, type: 3}
+--- !u!114 &2797873065011848712
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4592784135678422276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6bd00b39fc64e4b4fa0b3fa57641bb0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerRespawn
+  checkpointSound: {fileID: 8300000, guid: bc118c17658e7924d862f2eeae537a7e, type: 3}
 --- !u!95 &1339131188545239168
 Animator:
   serializedVersion: 7
