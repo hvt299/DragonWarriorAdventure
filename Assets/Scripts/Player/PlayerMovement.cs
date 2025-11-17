@@ -4,6 +4,19 @@ public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float speed = 1;
     [SerializeField] private float jumpPower = 1;
+
+    [Header ("Coyote Time")]
+    [SerializeField] private float coyoteTime = 0.25f; // How much time the player can hang in the air before jumping
+    private float coyoteCounter; // How much time passed since the player ran off the edge
+
+    [Header ("Multiple Jumps")]
+    [SerializeField] private int extraJumps = 2;
+    private int jumpCounter;
+
+    [Header ("Wall Jumping")]
+    [SerializeField] private float wallJumpX = 1500; // Horizontal wall jump force
+    [SerializeField] private float wallJumpY = 750; // Vertical wall jump force
+
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private LayerMask wallLayer;
     private Rigidbody2D body;
@@ -37,49 +50,78 @@ public class PlayerMovement : MonoBehaviour
         anim.SetBool("run", horizontalInput != 0);
         anim.SetBool("grounded", isGrounded());
 
-        // Wall jump logic
-        if (wallJumpCooldown < 0.2f)
+        // Jump
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            body.linearVelocity = new Vector2(horizontalInput * speed, body.linearVelocity.y);
+            Jump();
+        }
 
-            if (onWall() && !isGrounded())
-            {
-                body.gravityScale = 0;
-                body.linearVelocity = Vector2.zero;
-            } else
-            {
-                body.gravityScale = 1;
-            }
+        // Adjustable jump height
+        if (Input.GetKeyUp(KeyCode.Space) && body.linearVelocity.y > 0)
+        {
+            body.linearVelocity = new Vector2(body.linearVelocity.x, body.linearVelocity.y / 2);
+        }
 
-            if (Input.GetKey(KeyCode.Space))
-            {
-                Jump();
-            }
+        if (onWall())
+        {
+            body.gravityScale = 0;
+            body.linearVelocity = Vector2.zero;
         } else
         {
-            wallJumpCooldown += Time.deltaTime;
+            body.gravityScale = 1;
+            body.linearVelocity = new Vector2(horizontalInput * speed, body.linearVelocity.y);
+            
+            if (isGrounded())
+            {
+                coyoteCounter = coyoteTime; // Reset coyote counter when on the ground
+                jumpCounter = extraJumps; // Reset jump counter to extra jump value
+            } else
+            {
+                coyoteCounter -= Time.deltaTime; // Start decreasing coyote counter when not on the ground
+            }
         }
     }
 
     private void Jump()
     {
-        if (isGrounded())
+        if (coyoteCounter <= 0 && !onWall() && jumpCounter <= 0) return;
+        // If coyote counter is 0 or less and not on the wall and don't have any extra jumps don't do anything
+
+        // SoundManager.instance.PlaySound(jumpSound);
+
+        if (onWall())
         {
-            body.linearVelocity = new Vector2(body.linearVelocity.x, jumpPower);
-            anim.SetTrigger("jump");
-        } else if (onWall() && !isGrounded())
+            WallJump();
+        } else
         {
-            if (horizontalInput == 0)
+            if (isGrounded())
             {
-                body.linearVelocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 10, 0);
-                transform.localScale = new Vector3(-Mathf.Sign(transform.localScale.x), transform.localScale.y, transform.localScale.z);
-            }
-            else
+                body.linearVelocity = new Vector2(body.linearVelocity.x, jumpPower);
+            } else
             {
-                body.linearVelocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 3, 6);
+                // If not on the ground and coyote counter bigger than 0 do a normal jump
+                if (coyoteCounter > 0)
+                {
+                    body.linearVelocity = new Vector2(body.linearVelocity.x, jumpPower);
+                } else
+                {
+                    if (jumpCounter > 0) // If we have extra jumps then jump and decrease the jump counter
+                    {
+                        body.linearVelocity = new Vector2(body.linearVelocity.x, jumpPower);
+                        jumpCounter--;
+                    }
+                }
             }
-            wallJumpCooldown = 0;
+
+            // Reset coyote counter to 0 to avoid double jumps
+            coyoteCounter = 0;
         }
+    }
+
+    private void WallJump()
+    {
+        body.AddForce(new Vector2(-Mathf.Sign(transform.localScale.x) * wallJumpX, wallJumpY));
+        wallJumpCooldown = 0;
     }
 
     private bool isGrounded()
