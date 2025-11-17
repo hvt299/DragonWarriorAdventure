@@ -3,6 +3,7 @@ using System.Collections;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [Header ("Movement Parameters")]
     [SerializeField] private float speed = 1;
     [SerializeField] private float jumpPower = 1;
 
@@ -18,15 +19,17 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float wallJumpX = 1500; // Horizontal wall jump force
     [SerializeField] private float wallJumpY = 750; // Vertical wall jump force
 
+    [Header ("Layers")]
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private LayerMask wallLayer;
+
     private Rigidbody2D body;
     private Animator anim;
     private BoxCollider2D boxCollider;
     private float wallJumpCooldown;
     private float horizontalInput;
 
-    [Header("SFX")]
+    [Header ("SFX")]
     [SerializeField] private AudioClip jumpSound;
 
     private void Awake()
@@ -91,7 +94,7 @@ public class PlayerMovement : MonoBehaviour
         if (coyoteCounter <= 0 && !onWall() && jumpCounter <= 0) return;
         // If coyote counter is 0 or less and not on the wall and don't have any extra jumps don't do anything
 
-        // SoundManager.instance.PlaySound(jumpSound);
+        SoundManager.instance.PlaySound(jumpSound);
 
         if (onWall())
         {
