@@ -21,11 +21,18 @@ public class Health : MonoBehaviour
     [Header ("Death Sound")]
     [SerializeField] private AudioClip deathSound;
     [SerializeField] private AudioClip hurtSound;
+
     private void Awake()
     {
         currentHealth = startingHealth;
         anim = GetComponent<Animator>();
         spriteRend = GetComponent<SpriteRenderer>();
+    }
+
+    private void OnDisable()
+    {
+        Physics2D.IgnoreLayerCollision(8, 9, false);
+        invulnerable = false;
     }
 
     public void TakeDamage(float _damage)
@@ -48,7 +55,11 @@ public class Health : MonoBehaviour
                     component.enabled = false;
                 }
 
-                anim.SetBool("grounded", true);
+                if (gameObject.CompareTag("Player"))
+                {
+                    anim.SetBool("grounded", true);
+                }
+
                 anim.SetTrigger("die");
 
                 isDead = true;
