@@ -30,7 +30,7 @@ public class SceneTransition : MonoBehaviour
 
         while (t > 0)
         {
-            t -= Time.deltaTime;
+            t -= Time.unscaledDeltaTime;
             c.a = t / fadeDuration;
             fadeImage.color = c;
             yield return null;
@@ -44,12 +44,13 @@ public class SceneTransition : MonoBehaviour
 
         while (t < fadeDuration)
         {
-            t += Time.deltaTime;
+            t += Time.unscaledDeltaTime;
             c.a = t / fadeDuration;
             fadeImage.color = c;
             yield return null;
         }
 
+        Time.timeScale = 1f;
         SceneManager.LoadScene(sceneName);
     }
 }
