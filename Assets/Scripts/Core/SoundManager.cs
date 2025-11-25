@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class SoundManager : MonoBehaviour
 {
@@ -10,10 +10,14 @@ public class SoundManager : MonoBehaviour
     {
         transform.SetParent(null);
         soundSource = GetComponent<AudioSource>();
+        if (soundSource == null) soundSource = gameObject.AddComponent<AudioSource>();
+
         if (transform.childCount > 0)
         {
             musicSource = transform.GetChild(0).GetComponent<AudioSource>();
         }
+
+        musicSource.loop = true;
 
         //Keep this object even when we go to new scene
         if (instance == null)
@@ -26,6 +30,7 @@ public class SoundManager : MonoBehaviour
         else if (instance != null && instance != this)
         {
             Destroy(gameObject);
+            return;
         }
 
         // Assign initial volumes
@@ -33,9 +38,25 @@ public class SoundManager : MonoBehaviour
         ChangeSoundVolume(0);
     }
 
+    public void PlayMusic(AudioClip clip)
+    {
+        // Nếu clip là null thì tắt nhạc
+        if (clip == null)
+        {
+            musicSource.Stop();
+            return;
+        }
+
+        if (musicSource.isPlaying && musicSource.clip == clip) return;
+
+        musicSource.Stop();
+        musicSource.clip = clip;
+        musicSource.Play();
+    }
+
     public void PlaySound(AudioClip _sound)
     {
-        soundSource.PlayOneShot(_sound);
+        if (_sound != null) soundSource.PlayOneShot(_sound);
     }
 
     public void ChangeSoundVolume(float _change)

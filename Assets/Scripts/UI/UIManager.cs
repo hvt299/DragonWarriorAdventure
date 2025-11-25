@@ -1,6 +1,6 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
-
+using System.Text.RegularExpressions;
 
 public class UIManager : MonoBehaviour
 {
@@ -11,10 +11,22 @@ public class UIManager : MonoBehaviour
     [Header ("Pause")]
     [SerializeField] private GameObject pauseScreen;
 
+    [Header("Level Completed")]
+    [SerializeField] private GameObject levelCompleteScreen;
+    [SerializeField] private AudioClip levelCompleteSound;
+
     private void Awake()
     {
         gameOverScreen.SetActive(false); // Make sure game over screen is hidden at start
         pauseScreen.SetActive(false);
+        levelCompleteScreen.SetActive(false);
+    }
+
+    // Level Menu
+    public void LevelMenu()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("LevelMenu");
     }
 
     private void Update()
@@ -93,5 +105,100 @@ public class UIManager : MonoBehaviour
     {
         SoundManager.instance.ChangeMusicVolume(0.2f);
     }
+    #endregion
+
+    #region Level Completed
+
+    // Hàm này sẽ được cái Cúp (FinishPoint) gọi khi chạm vào
+    public void LevelComplete()
+    {
+        // 1. Mở khóa Level tiếp theo (Lưu dữ liệu)
+        UnlockNextLevelByName();
+
+        // 2. Hiển thị UI Win
+        if (levelCompleteScreen != null)
+            levelCompleteScreen.SetActive(true);
+
+        // 3. Phát âm thanh
+        if (SoundManager.instance != null)
+        {
+            SoundManager.instance.PlayMusic(null); // Tắt nhạc nền
+            SoundManager.instance.PlaySound(levelCompleteSound);
+        }
+
+        // 4. Dừng thời gian (để nhân vật không chạy lung tung)
+        Time.timeScale = 0f;
+    }
+
+    private void UnlockNextLevelByName()
+    {
+        // Bước 1: Lấy tên Scene hiện tại (Ví dụ: "Level1", "Scene_Level_2", "Level-5")
+        string currentSceneName = SceneManager.GetActiveScene().name;
+
+        // Bước 2: Dùng Regex để tìm con số nằm trong tên
+        // Lệnh \d+ nghĩa là "tìm tất cả các chữ số liền nhau"
+        Match match = Regex.Match(currentSceneName, @"\d+");
+
+        if (match.Success)
+        {
+            // Bước 3: Lấy con số tìm được ra (Ví dụ tìm được "1")
+            int currentLevelNum = int.Parse(match.Value);
+
+            // Bước 4: Tính level tiếp theo (1 + 1 = 2)
+            int nextLevelNum = currentLevelNum + 1;
+
+            // Bước 5: Lưu vào PlayerPrefs (Giữ nguyên logic cũ để tương thích với Button)
+            int reachedLevel = PlayerPrefs.GetInt("LevelsUnlocked", 1);
+
+            if (nextLevelNum > reachedLevel)
+            {
+                PlayerPrefs.SetInt("LevelsUnlocked", nextLevelNum);
+                PlayerPrefs.Save();
+                Debug.Log($"Đang ở {currentSceneName} (Số {currentLevelNum}) -> Đã mở khóa Level {nextLevelNum}");
+            }
+        }
+        else
+        {
+            Debug.LogError("Tên Scene hiện tại KHÔNG CÓ SỐ! Vui lòng đặt tên kiểu 'Level1', 'Level 2'...");
+        }
+    }
+
+    // Hàm xử lý logic lưu PlayerPrefs
+    //private void UnlockNextLevel()
+    //{
+    //    int currentLevelIndex = SceneManager.GetActiveScene().buildIndex;
+    //    int unlockedLevel = PlayerPrefs.GetInt("LevelsUnlocked", 1);
+
+    //    // Giả sử Level 1 có index là 1 (theo Build Settings)
+    //    // Nếu chơi xong Level 1 (current=1) -> Muốn mở Level 2
+    //    if (currentLevelIndex >= unlockedLevel)
+    //    {
+    //        PlayerPrefs.SetInt("LevelsUnlocked", currentLevelIndex + 1);
+    //        PlayerPrefs.Save();
+    //    }
+    //}
+
+    // Hàm cho nút "Next Level" trên UI
+    //public void NextLevel()
+    //{
+    //    Time.timeScale = 1f; // Nhớ trả lại thời gian trước khi chuyển cảnh
+
+    //    int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
+
+    //    // Kiểm tra xem có còn màn tiếp theo không
+    //    if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
+    //    {
+    //        // Chuyển cảnh (Dùng Manager xịn của bạn)
+    //        if (SceneTransitionManager.instance != null)
+    //            SceneTransitionManager.instance.ChangeScene(nextSceneIndex.ToString()); // Hoặc tên Scene
+    //        else
+    //            SceneManager.LoadScene(nextSceneIndex);
+    //    }
+    //    else
+    //    {
+    //        Debug.Log("Đã hết màn chơi -> Về Menu");
+    //        LevelMenu();
+    //    }
+    //}
     #endregion
 }

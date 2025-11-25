@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class SpikeHead : EnemyDamage
 {
@@ -69,10 +69,16 @@ public class SpikeHead : EnemyDamage
         attacking = false;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        SoundManager.instance.PlaySound(impactSound);
-        base.OnTriggerEnter2D(collision);
-        Stop(); // Stop spikehead once he hits something
+        if (SoundManager.instance != null)
+            SoundManager.instance.PlaySound(impactSound);
+
+        Stop();
+
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            base.OnTriggerEnter2D(collision.collider);
+        }
     }
 }
