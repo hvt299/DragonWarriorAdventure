@@ -241,8 +241,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
   startingHealth: 3
-  iFramesDuration: 0
-  numberOfFlashes: 0
+  iFramesDuration: 2
+  numberOfFlashes: 3
   components:
   - {fileID: 744612078520612187}
   - {fileID: 0}
@@ -261,7 +261,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RangedEnemy
   attackCooldown: 1
-  range: 13
+  range: 6
   damage: 1
   firepoint: {fileID: 6008533476194253574}
   fireballs:

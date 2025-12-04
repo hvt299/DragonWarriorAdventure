@@ -208,7 +208,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6021e55ee96c82445bb5ef8222bae4a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
-  attackCooldown: 0.5
+  attackCooldown: 1
   firePoint: {fileID: 3249025151017504947}
   fireballs:
   - {fileID: 0}

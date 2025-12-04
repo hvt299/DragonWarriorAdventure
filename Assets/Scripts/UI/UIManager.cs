@@ -162,43 +162,5 @@ public class UIManager : MonoBehaviour
             Debug.LogError("Tên Scene hiện tại KHÔNG CÓ SỐ! Vui lòng đặt tên kiểu 'Level1', 'Level 2'...");
         }
     }
-
-    // Hàm xử lý logic lưu PlayerPrefs
-    //private void UnlockNextLevel()
-    //{
-    //    int currentLevelIndex = SceneManager.GetActiveScene().buildIndex;
-    //    int unlockedLevel = PlayerPrefs.GetInt("LevelsUnlocked", 1);
-
-    //    // Giả sử Level 1 có index là 1 (theo Build Settings)
-    //    // Nếu chơi xong Level 1 (current=1) -> Muốn mở Level 2
-    //    if (currentLevelIndex >= unlockedLevel)
-    //    {
-    //        PlayerPrefs.SetInt("LevelsUnlocked", currentLevelIndex + 1);
-    //        PlayerPrefs.Save();
-    //    }
-    //}
-
-    // Hàm cho nút "Next Level" trên UI
-    //public void NextLevel()
-    //{
-    //    Time.timeScale = 1f; // Nhớ trả lại thời gian trước khi chuyển cảnh
-
-    //    int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
-
-    //    // Kiểm tra xem có còn màn tiếp theo không
-    //    if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
-    //    {
-    //        // Chuyển cảnh (Dùng Manager xịn của bạn)
-    //        if (SceneTransitionManager.instance != null)
-    //            SceneTransitionManager.instance.ChangeScene(nextSceneIndex.ToString()); // Hoặc tên Scene
-    //        else
-    //            SceneManager.LoadScene(nextSceneIndex);
-    //    }
-    //    else
-    //    {
-    //        Debug.Log("Đã hết màn chơi -> Về Menu");
-    //        LevelMenu();
-    //    }
-    //}
     #endregion
 }
