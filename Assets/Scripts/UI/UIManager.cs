@@ -51,7 +51,11 @@ public class UIManager : MonoBehaviour
 
         // Change position of the selection arrow
         gameOverScreen.SetActive(true);
-        SoundManager.instance.PlaySound(gameOverSound);
+        if (SoundManager.instance != null)
+        {
+            SoundManager.instance.PlayMusic(null); // Tắt nhạc nền
+            SoundManager.instance.PlaySound(gameOverSound);
+        }
     }
 
     // Restart level
